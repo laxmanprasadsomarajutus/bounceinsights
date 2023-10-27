@@ -1,23 +1,27 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import axios from 'axios';
+import CountryInput from './components/CountryInput';
+import CountryInfo from './components/CountryInfo';
 
 function App() {
+  const [countryInfo, setCountryInfo] = useState(null);
+
+  const searchCountry = async (countryName) => {
+    try {
+      const response = await axios.get(`/api/country?name=${countryName}`);
+      setCountryInfo(response.data);
+    } catch (error) {
+      console.error('Error fetching country data:', error);
+      setCountryInfo(null);
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container mt-5"> {/* Apply Bootstrap container class and top margin */}
+      <h1>Country Information App</h1>
+      <CountryInput onSearch={searchCountry} />
+      <CountryInfo country={countryInfo} />
     </div>
   );
 }
